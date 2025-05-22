@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAISURYAPRAKASH A - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Visualization & Content Choices:
+        - Hero: Report Info: Personal branding. Goal: Immediate impact. Method: Large text, call-to-action. Interaction: Scroll/button. Justification: Standard portfolio intro.
+        - About: Report Info: Detailed bio. Goal: Personal connection. Method: Text blocks, simple layout. Interaction: Scroll. Justification: Narrative flow.
+        - Skills: Report Info: Technical/Soft skills. Goal: Quick overview of capabilities. Method: Categorized lists. Interaction: Scroll. Justification: Clear categorization.
+        - Projects: Report Info: Work samples. Goal: Showcase work. Method: Project cards with title, description, links, and a new "Learn More" button. Interaction: Clickable cards, hover effects, and a new modal for LLM-generated project insights. Justification: Visual, digestible project display enhanced with dynamic, AI-powered details.
+        - Contact: Report Info: Contact info. Goal: Facilitate communication. Method: Form/text. Interaction: Form submission/direct links. Justification: Standard contact method.
+        - Library/Method: Vanilla JS for dynamic elements, Tailwind CSS for styling. Gemini API for LLM-powered project explanations.
+    -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fcfbf9; /* Very light warm beige */
+            color: #333;
+        }
+        .section-header {
+            color: #00796b; /* Muted Teal */
+            font-weight: 700;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+        .section-header::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            width: 50%;
+            height: 4px;
+            background-color: #00796b; /* Muted Teal underline */
+            border-radius: 2px;
+        }
+        .nav-link {
+            color: #004d40; /* Darker Muted Teal */
+            transition: color 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #00796b; /* Muted Teal */
+        }
+        .project-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #00796b;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav class="fixed top-0 left-0 right-0 bg-white bg-opacity-95 shadow-md z-50 py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="#hero" class="text-2xl font-bold text-gray-800">JAISURYAPRAKASH A</a>
+            <div class="space-x-6">
+                <a href="#about" class="nav-link text-lg">About</a>
+                <a href="#skills" class="nav-link text-lg">Skills</a>
+                <a href="#projects" class="nav-link text-lg">Projects</a>
+                <a href="#contact" class="nav-link text-lg">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <section id="hero" class="min-h-screen flex items-center justify-center text-center bg-gradient-to-br from-stone-50 to-teal-50 pt-20">
+        <div class="container mx-auto px-4 py-16">
+            <h1 class="text-5xl md:text-6xl font-bold text-gray-800 mb-4 leading-tight">
+                Hi, I'm <span class="text-teal-700">JAISURYAPRAKASH A</span> 👋
+            </h1>
+            <p class="text-2xl md:text-3xl text-gray-600 mb-8">
+                An Entry-Level Software Engineer & Data Scientist (Graduated 2025)
+            </p>
+            <p class="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto mb-10">
+                Welcome to my portfolio! I translate business requirements into technical solutions, passionate about implementing and launching new projects. Explore my work below.
+            </p>
+            <a href="#projects" class="bg-teal-700 hover:bg-teal-800 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+                View My Work 👇
+            </a>
+        </div>
+    </section>
+
+    <section id="about" class="py-16 md:py-24 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl section-header mb-12">About Me</h2>
+            <div class="flex flex-col md:flex-row items-center md:space-x-12">
+                <div class="md:w-1/2 mb-8 md:mb-0">
+                    <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                        I completed my B.Tech in Artificial Intelligence and Data Science from Anna University in 2025, with a strong foundation in C, Python, and SQL. My career objective is to secure a challenging role in a reputable organization where I can leverage my technical, database, and management skills for organizational growth and enhance my knowledge of emerging IT trends.
+                    </p>
+                    <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                        I have practical experience in data analytics, having completed an internship at Cognitive I Solutions where I focused on data analysis with Tableau. Additionally, I have 1 year of experience as a Computer Science Teacher, which has honed my communication and problem-solving skills in an educational setting.
+                    </p>
+                    <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                        I am passionate about implementing and launching new projects, with a proven ability to translate business requirements into effective technical solutions. My strengths include being self-controlled, possessing strong problem-solving skills, and being a motivational individual.
+                    </p>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        I am desirous of an IT Service Management role in a challenging workplace that welcomes innovative ideas and offers growth opportunities and a positive environment for accomplishing projects.
+                    </p>
+                </div>
+                <div class="md:w-1/2 flex justify-center">
+                    <div class="w-64 h-64 bg-teal-100 rounded-full flex items-center justify-center text-teal-700 text-6xl font-bold border-4 border-teal-300 shadow-xl">
+                        AI
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="py-16 md:py-24 bg-stone-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl section-header mb-12">My Skills</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md border border-teal-100">
+                    <h3 class="text-2xl font-semibold text-teal-700 mb-4">Programming & Databases</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        <li>Python</li>
+                        <li>SQL</li>
+                        <li>C</li>
+                        <li>Java (Basic Knowledge)</li>
+                        <li>Database Management</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border border-teal-100">
+                    <h3 class="text-2xl font-semibold text-teal-700 mb-4">Data Science & Analytics</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        <li>Data Analytics</li>
+                        <li>Tableau</li>
+                        <li>Big Data Management</li>
+                        <li>AI Concepts</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border border-teal-100">
+                    <h3 class="text-2xl font-semibold text-teal-700 mb-4">Soft Skills & Certifications</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        <li>Problem Solving</li>
+                        <li>Self Controlled</li>
+                        <li>Motivational</li>
+                        <li>IT Service Management</li>
+                        <li>Teaching (Computer Science)</li>
+                        <li>Certification of Elements of AI (2021)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="py-16 md:py-24 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl section-header mb-12">My Projects</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <div class="project-card bg-stone-50 p-6 rounded-lg shadow-md border border-teal-100">
+                    <h3 class="text-2xl font-semibold text-teal-700 mb-3">🍦 Ice Cream Sales Predictor</h3>
+                    <p class="text-gray-700 mb-4">
+                        A web application that forecasts ice cream sales based on temperature using linear regression. Features interactive predictions and data visualization.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-teal-200 text-teal-800 text-sm font-medium px-2.5 py-0.5 rounded-full">React</span>
+                        <span class="bg-teal-200 text-teal-800 text-sm font-medium px-2.5 py-0.5 rounded-full">JavaScript</span>
+                        <span class="bg-teal-200 text-teal-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Linear Regression</span>
+                        <span class="bg-teal-200 text-teal-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Chart.js</span>
+                    </div>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="https://JaisuryaprakashA.github.io/jaisuryascodes/ice%20cream%20project/" target="_blank" class="text-teal-700 hover:text-teal-900 font-semibold flex items-center">
+                            Live Demo →
+                        </a>
+                        <a href="https://github.com/JaisuryaprakashA/jaisuryascodes/tree/main/ice%20cream%20project" target="_blank" class="text-gray-600 hover:text-gray-900 flex items-center">
+                            GitHub Code →
+                        </a>
+                    </div>
+                    <button class="mt-4 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-full text-sm transition duration-300 ease-in-out transform hover:scale-105"
+                            onclick="showProjectDetails('Ice Cream Sales Predictor', 'A web application that forecasts ice cream sales based on temperature using linear regression. Features interactive predictions and data visualization.', 'Entry-Level Software Engineer')">
+                        ✨ Learn More
+                    </button>
+                </div>
+
+                <div class="project-card bg-stone-50 p-6 rounded-lg shadow-md border border-teal-100">
+                    <h3 class="text-2xl font-semibold text-teal-700 mb-3">📧 Email Spam Detection</h3>
+                    <p class="text-gray-700 mb-4">
+                        A project focused on building an email filter to identify and classify spam emails, enhancing email security and user experience.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-teal-200 text-teal-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Python</span>
+                        <span class="bg-teal-200 text-teal-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Machine Learning</span>
+                        <span class="bg-teal-200 text-teal-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Data Filtering</span>
+                    </div>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" target="_blank" class="text-teal-700 hover:text-teal-900 font-semibold flex items-center">
+                            Live Demo →
+                        </a>
+                        <a href="#" target="_blank" class="text-gray-600 hover:text-gray-900 flex items-center">
+                            GitHub Code →
+                        </a>
+                    </div>
+                    <button class="mt-4 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-full text-sm transition duration-300 ease-in-out transform hover:scale-105"
+                            onclick="showProjectDetails('Email Spam Detection', 'A project focused on building an email filter to identify and classify spam emails, enhancing email security and user experience.', 'Data Scientist')">
+                        ✨ Learn More
+                    </button>
+                </div>
+
+                <div class="project-card bg-stone-50 p-6 rounded-lg shadow-md border border-teal-100">
+                    <h3 class="text-2xl font-semibold text-teal-700 mb-3">⚖️ Crime Based Punishment Prediction</h3>
+                    <p class="text-gray-700 mb-4">
+                        Developed a system to predict appropriate punishments based on crime data, leveraging machine learning techniques for informed decision-making in legal contexts.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-teal-200 text-teal-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Machine Learning</span>
+                        <span class="bg-teal-200 text-teal-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Data Analysis</span>
+                        <span class="bg-teal-200 text-teal-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Prediction Models</span>
+                        <span class="bg-teal-200 text-teal-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Python</span>
+                    </div>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" target="_blank" class="text-teal-700 hover:text-teal-900 font-semibold flex items-center">
+                            Live Demo →
+                        </a>
+                        <a href="https://github.com/JaisuryaprakashA/jaisuryascodes/blob/c0d38416389f07be4a609c27f6d9b482be05612f/Copy_of_final_year_project.ipynb" target="_blank" class="text-gray-600 hover:text-gray-900 flex items-center">
+                            GitHub Code →
+                        </a>
+                    </div>
+                    <button class="mt-4 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-full text-sm transition duration-300 ease-in-out transform hover:scale-105"
+                            onclick="showProjectDetails('Crime Based Punishment Prediction', 'Developed a system to predict appropriate punishments based on crime data, leveraging machine learning techniques for informed decision-making in legal contexts.', 'Data Scientist')">
+                        ✨ Learn More
+                    </button>
+                </div>
+
+                <div class="project-card bg-stone-50 p-6 rounded-lg shadow-md border border-teal-100">
+                    <h3 class="text-2xl font-semibold text-teal-700 mb-3">🏦 Churn Prediction using Bank Data</h3>
+                    <p class="text-gray-700 mb-4">
+                        A machine learning project focused on predicting customer churn in banks. This involves comprehensive data analysis, preprocessing, training various classification models, and evaluating their effectiveness to identify at-risk customers.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-teal-200 text-teal-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Python</span>
+                        <span class="bg-teal-200 text-teal-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Machine Learning</span>
+                        <span class="bg-teal-200 text-teal-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Data Analysis</span>
+                        <span class="bg-teal-200 text-teal-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Scikit-learn</span>
+                        <span class="bg-teal-200 text-teal-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Pandas</span>
+                        <span class="bg-teal-200 text-teal-800 text-sm font-medium px-2.5 py-0.5 rounded-full">Matplotlib</span>
+                    </div>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" target="_blank" class="text-teal-700 hover:text-teal-900 font-semibold flex items-center">
+                            Live Demo →
+                        </a>
+                        <a href="#" target="_blank" class="text-gray-600 hover:text-gray-900 flex items-center">
+                            GitHub Code →
+                        </a>
+                    </div>
+                    <button class="mt-4 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-full text-sm transition duration-300 ease-in-out transform hover:scale-105"
+                            onclick="showProjectDetails('Churn Prediction using Bank Data', 'A machine learning project focused on predicting customer churn in banks. This involves comprehensive data analysis, preprocessing, training various classification models, and evaluating their effectiveness to identify at-risk customers.', 'Data Scientist')">
+                        ✨ Learn More
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-16 md:py-24 bg-stone-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl section-header mb-12">Get In Touch</h2>
+            <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md border border-teal-100">
+                <p class="text-lg text-gray-700 mb-6 text-center">
+                    Have a project in mind or just want to chat? Feel free to reach out!
+                </p>
+                <form class="space-y-4">
+                    <div>
+                        <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name</label>
+                        <input type="text" id="name" name="name" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-teal-300" placeholder="Your Name">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                        <input type="email" id="email" name="email" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-teal-300" placeholder="your.email@example.com">
+                    </div>
+                    <div>
+                        <label for="message" class="block text-gray-700 text-sm font-bold mb-2">Message</label>
+                        <textarea id="message" name="message" rows="5" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-teal-300" placeholder="Your message..."></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="bg-teal-700 hover:bg-teal-800 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+                            Send Message
+                        </button>
+                    </div>
+                </form>
+                <p class="text-center text-gray-700 mt-8">
+                    Mobile: (+91)-760 496 5326
+                </p>
+                <p class="text-center text-gray-600 mt-4">
+                    Or connect with me on:
+                </p>
+                <div class="flex justify-center space-x-6 mt-4">
+                    <a href="https://www.linkedin.com/in/jaisurya-prakash-962b03267" target="_blank" class="text-teal-700 hover:text-teal-900 text-3xl transition duration-300">
+                        🔗 </a>
+                    <a href="https://github.com/JaisuryaprakashA" target="_blank" class="text-teal-700 hover:text-teal-900 text-3xl transition duration-300">
+                        🐙 </a>
+                    <a href="mailto:jaisuryaprakash26@gmail.com" class="text-teal-700 hover:text-teal-900 text-3xl transition duration-300">
+                        ✉️ </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="text-center py-8 bg-gray-100 text-gray-600 border-t border-gray-200">
+        <p>&copy; <span id="currentYear"></span> JAISURYAPRAKASH A. All rights reserved.</p>
+    </footer>
+
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeProjectModal()">&times;</span>
+            <h3 id="modalProjectTitle" class="text-2xl font-semibold text-teal-700 mb-4"></h3>
+            <div id="modalProjectDetails" class="text-gray-700">
+                <div class="loading-spinner"></div>
+                <p class="text-center text-gray-500 mt-4">Generating insights with Gemini...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        const projectModal = document.getElementById('projectModal');
+        const modalProjectTitle = document.getElementById('modalProjectTitle');
+        const modalProjectDetails = document.getElementById('modalProjectDetails');
+
+        async function showProjectDetails(title, description, role) {
+            modalProjectTitle.textContent = title;
+            modalProjectDetails.innerHTML = '<div class="loading-spinner"></div><p class="text-center text-gray-500 mt-4">Generating insights with Gemini...</p>';
+            projectModal.style.display = 'flex'; // Use flex to center the modal
+
+            const prompt = `As an expert career advisor, explain the project titled '${title}' in about 3-4 sentences, focusing on its technical challenges, the impact it had, and why it's a valuable project for a ${role} portfolio. The project description is: '${description}'`;
+
+            try {
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = ""; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    modalProjectDetails.innerHTML = `<p>${text}</p>`;
+                } else {
+                    modalProjectDetails.innerHTML = '<p class="text-red-500">Failed to generate insights. Please try again later.</p>';
+                    console.error('Gemini API response structure unexpected:', result);
+                }
+            } catch (error) {
+                modalProjectDetails.innerHTML = `<p class="text-red-500">Error: ${error.message}. Could not connect to Gemini API.</p>`;
+                console.error('Error calling Gemini API:', error);
+            }
+        }
+
+        function closeProjectModal() {
+            projectModal.style.display = 'none';
+        }
+
+        // Close modal if clicked outside
+        window.onclick = function(event) {
+            if (event.target == projectModal) {
+                projectModal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
